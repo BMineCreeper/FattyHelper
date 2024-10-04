@@ -1,5 +1,5 @@
 ## Output directory
-BUILD_DIR = build
+BUILD_DIR = ../build
 
 # Ensure build directory exists
 
@@ -7,8 +7,8 @@ BUILD_DIR = build
 #CXX = clang++
 
 EXE = fattyhelper
-IMGUI_DIR = imgui/
-SOURCES = main2.cpp ButtonOptions.h
+IMGUI_DIR = ../imgui/
+SOURCES = main.cpp BUtils.h
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl2.cpp $(IMGUI_DIR)/backends/imgui_impl_sdlrenderer2.cpp
 
