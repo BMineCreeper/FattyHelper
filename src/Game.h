@@ -22,12 +22,14 @@ private:
     SDL_Renderer* renderer = nullptr;
     ImGuiIO io;
     ImGuiViewport* viewport;
-    ImVec2 MainGuiSize{100,100};
-    ImVec2 MainGuiPos{0,0};
+    ImVec2 MainGuiSize{300,100};
+    ImVec2 MainGuiPos{490,0};
     bool runApp = true;
     bool showError = true;
     bool validPath = false;
     std::string GUIError;
     std::stack<std::string> errorStack;
     FileHandler fileHandler{this};
+    int Width;
+    int Height;
 };

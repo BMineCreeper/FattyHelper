@@ -20,11 +20,18 @@ Game::Game()
     //Setup Dear ImGui
     io = ImGuiUtils::SetupImGui(window,renderer);
     viewport = ImGui::GetMainViewport();
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    Width = DM.w/1.5;
+    Height = DM.h/1.5;
+    MainGuiSize = {Width/3,Height};
+    MainGuiPos = {Width - MainGuiSize.x,0};
 }
 
 void Game::Run()
 {
-    ImGui::SetNextWindowSize({MainGuiSize});
+    
+    bool resize = true;
     while(runApp){
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -42,7 +49,17 @@ void Game::Run()
         }
         ImGuiUtils::ImGuiStartFrame();
         
+        //ImGui::ShowDemoWindow();
+        if(resize)
+        {
+            ImGui::SetNextWindowPos(MainGuiPos);
+            ImGui::SetNextWindowSize(MainGuiSize);
+            resize = false;
+        }
         RunMainGui();
+        ImGui::SetNextWindowPos({0,0});
+        ImGui::SetNextWindowSize({Width - MainGuiSize.x,Height/2});
+        DisplayFileGui();
         
         // Rendering
         ImGui::Render();
@@ -55,21 +72,22 @@ void Game::Run()
 
 void Game::RunMainGui()
 {
-    
-    ImGui::SetNextWindowPos(MainGuiPos);
+    //ImGui::SetNextWindowPos(MainGuiPos);
     {
         ImGui::Begin("Main GUI",nullptr,ImGuiWindowFlags_NoMove);
-        MainGuiSize = ImGui::GetItemRectSize();
-        //ImGui::Text("Specify a path leading to a .lua file");
-        
         ImGui::TextColored(ImVec4(1,0,0,1), GUIError.c_str());
-        
-        ImGui::SetNextItemWidth(MainGuiSize.x/3);
+        MainGuiSize = ImGui::GetWindowSize();
+        ImGui::SetNextItemWidth(MainGuiSize.x/1.25);
         ImGui::InputText("path",fileHandler.FilePath,256);
         if (ImGui::IsItemActive()) {
             fileHandler.CheckPath(fileHandler.FilePath);
         }
-        if(ImGui::Button("Click this to close the app",{MainGuiSize.x/3,20}))
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("Specify path to lua file");
+        }
+        
+        if(ImGui::Button("Click this to close the app",{MainGuiSize.x/1.25,20}))
         {
             runApp = false;
         }
@@ -79,7 +97,9 @@ void Game::RunMainGui()
 
 void Game::DisplayFileGui()
 {
-    
+    //ImGui::SetNextWindowPos({0,0});
+    ImGui::Begin("Text Window",nullptr,ImGuiWindowFlags_NoResize);
+    ImGui::End();
 }
 
 void Game::AddError(std::string _error)
