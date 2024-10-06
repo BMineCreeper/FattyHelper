@@ -1,12 +1,8 @@
 #pragma once
 #include <imgui.h>
-#include <SDL_render.h>
-
-#include <iostream>
+#include <SDL2/SDL_render.h>
+#include <string>
 #include <stack>
-
-#include "FileHandler.h"
-#include "TextDisplay.h"
 
 class Game
 {
@@ -17,7 +13,7 @@ public:
     bool RemoveError(const std::string& _input);
 private:
     void RunMainGui();
-    void DisplayFileGui(TextDisplay& _textDisplay);
+    void DisplayFileGui();
     ImVec4 clear_color{0.45f, 0.55f, 0.60f, 1.00f};
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
@@ -28,9 +24,9 @@ private:
     bool runApp = true;
     bool showError = true;
     bool validPath = false;
+    char path[256];
     std::string GUIError;
     std::stack<std::string> errorStack;
-    FileHandler fileHandler{this};
     int Width;
     int Height;
 };

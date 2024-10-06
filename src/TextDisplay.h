@@ -1,11 +1,12 @@
 #pragma once
-#include "FileHandler.h"
+#include <fstream>
+#include "imgui.h"
 
-class TextDisplay
-{
-public:
-    TextDisplay(FileHandler _fh);
-    void DisplayText();
-private:
-    FileHandler fileHandler;
-};
+namespace TextDisplay {
+void DisplayFromFile(std::fstream& _file) {
+  std::string line;
+  while(std::getline(_file,line)){
+    ImGui::Text("%s", line.c_str());
+  }
+}
+} 

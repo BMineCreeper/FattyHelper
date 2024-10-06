@@ -2,41 +2,41 @@
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "main.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o main.o main.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o main.o main.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//imgui.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui.o imgui//imgui.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui.o imgui//imgui.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//imgui_demo.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_demo.o imgui//imgui_demo.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config -c -o imgui_demo.o imgui//imgui_demo.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//imgui_draw.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_draw.o imgui//imgui_draw.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui_draw.o imgui//imgui_draw.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//imgui_tables.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_tables.o imgui//imgui_tables.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui_tables.o imgui//imgui_tables.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//imgui_widgets.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_widgets.o imgui//imgui_widgets.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui_widgets.o imgui//imgui_widgets.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//backends/imgui_impl_sdl2.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_impl_sdl2.o imgui//backends/imgui_impl_sdl2.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui_impl_sdl2.o imgui//backends/imgui_impl_sdl2.cpp"
   },
   {
     "directory": "/home/bminecreeper/Projects/fh",
     "file": "imgui//backends/imgui_impl_sdlrenderer2.cpp",
-    "command": "g++ -std=c++11 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config --cflags` -c -o imgui_impl_sdlrenderer2.o imgui//backends/imgui_impl_sdlrenderer2.cpp"
+    "command": "g++ -std=c++17 -Iimgui/ -Iimgui//backends -g -Wall -Wformat `sdl2-config  -c -o imgui_impl_sdlrenderer2.o imgui//backends/imgui_impl_sdlrenderer2.cpp"
   }
 ]
