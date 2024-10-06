@@ -6,6 +6,7 @@
 #include <stack>
 
 #include "FileHandler.h"
+#include "TextDisplay.h"
 
 class Game
 {
@@ -16,7 +17,7 @@ public:
     bool RemoveError(const std::string& _input);
 private:
     void RunMainGui();
-    void DisplayFileGui();
+    void DisplayFileGui(TextDisplay& _textDisplay);
     ImVec4 clear_color{0.45f, 0.55f, 0.60f, 1.00f};
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;

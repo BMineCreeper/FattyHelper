@@ -24,6 +24,8 @@ set(SOURCES
         src/Game.cpp
         src/FileHandler.cpp
         src/FileHandler.h
+        src/TextDisplay.cpp
+        src/TextDisplay.h
 )
 
 

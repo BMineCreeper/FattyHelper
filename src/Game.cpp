@@ -8,7 +8,9 @@
 #include "backends/imgui_impl_sdl2.h"
 
 #include "Game.h"
+#include "TextDisplay.h"
 #include "SetupUtils.h"
+
 
 Game::Game()
 {
@@ -30,7 +32,7 @@ Game::Game()
 
 void Game::Run()
 {
-    
+    TextDisplay textDisplay;
     bool resize = true;
     while(runApp){
         SDL_Event event;
@@ -59,7 +61,7 @@ void Game::Run()
         RunMainGui();
         ImGui::SetNextWindowPos({0,0});
         ImGui::SetNextWindowSize({Width - MainGuiSize.x,Height/2});
-        DisplayFileGui();
+        DisplayFileGui(textDisplay);
         
         // Rendering
         ImGui::Render();
@@ -95,10 +97,12 @@ void Game::RunMainGui()
     }
 }
 
-void Game::DisplayFileGui()
+void Game::DisplayFileGui(TextDisplay& _textDisplay)
 {
     //ImGui::SetNextWindowPos({0,0});
     ImGui::Begin("Text Window",nullptr,ImGuiWindowFlags_NoResize);
+    ImGui::LogToClipboard();
+    //Display Text here
     ImGui::End();
 }
 
