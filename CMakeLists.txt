@@ -5,9 +5,11 @@ project(FattyHelper VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Include directories
-include_directories(imgui)  # ImGui headers
-# Your own project include directory (if you have)
+# Set the path where SDL2 and SDL2_image are installed
+set(CMAKE_PREFIX_PATH "C:/Libraries/")
+
+# Include directories for ImGui
+include_directories(imgui)
 
 # Source files for your project
 set(SOURCES
@@ -20,23 +22,24 @@ set(SOURCES
         imgui/backends/imgui_impl_sdl2.cpp
         imgui/backends/imgui_impl_sdlrenderer2.cpp
         src/SetupUtils.h
-        src/Game.h
-        src/Game.cpp
-        src/FileHandler.cpp
+        src/Editor.h
+        src/Editor.cpp
         src/FileHandler.h
-        src/TextDisplay.cpp
         src/TextDisplay.h
 )
 
-
-# Find SDL2 on the system
-set(CMAKE_PREFIX_PATH "C:/Libraries/")
+# Find SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-# Define the executable target
+# Find SDL2_image
+find_package(SDL2_image CONFIG REQUIRED)
+include_directories("C:\\Libraries\\SDL2_image\\x86_64-w64-mingw32\\include\\SDL2")
+# Debugging messages
+message(STATUS "SDL2 include dirs: " ${SDL2_INCLUDE_DIRS})
+message(STATUS "SDL2_image include dirs: " ${SDL2_IMAGE_INCLUDE_DIRS})
+
+# Add the executable
 add_executable(FattyHelper ${SOURCES})
 
-
-# Link SDL2 libraries to your executable
-target_link_libraries(FattyHelper ${SDL2_LIBRARIES} SDL2::SDL2main)
+target_link_libraries(FattyHelper "C:\\Libraries\\SDL2_image\\x86_64-w64-mingw32\\lib\\libSDL2_image.a" ${SDL2_LIBRARIES})

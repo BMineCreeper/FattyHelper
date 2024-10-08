@@ -1,10 +1,10 @@
 //  My Includes
-#include "Game.h"
+#include "Editor.h"
 
 #include <SDL2/SDL.h>
 
 int main(int argc, char* argv[]){
-  Game game;
+  Editor game;
   game.Run();
   return 0;
 }

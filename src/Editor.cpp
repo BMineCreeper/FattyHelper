@@ -2,18 +2,20 @@
 #include <iostream>
 
 #include <SDL2/SDL.h>
+#include <SDL_image.h>
 
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include "imgui.h"
 
-#include "Game.h"
+#include "Editor.h"
 #include "SetupUtils.h"
 #include "FileHandler.h"
+#include "TextDisplay.h"
 
-Game::Game() {
+Editor::Editor() {
   if (!SDLUtils::SetupSDL(window, renderer)) {
-    std::cout << "Game couldn't start, SDL Failed!\n";
+    std::cout << "Editor couldn't start, SDL Failed!\n";
   }
 
   // Setup Dear ImGui
@@ -25,9 +27,15 @@ Game::Game() {
   Height = DM.h / 1.5;
   MainGuiSize = {Width / 3.0f, (float)Height};
   MainGuiPos = {Width - MainGuiSize.x, 0};
+  SDL_Surface* image = IMG_Load("../CB.png");
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer,image);
+  CopyTexture = texture;
+  //image = IMG_Load()
+  ImGuiUtils::SetCustomImGuiStyle();
 }
 
-void Game::Run() {
+void Editor::Run() {
+  bool log = false;
   bool resize = true;
   while (runApp) {
     SDL_Event event;
@@ -46,7 +54,7 @@ void Game::Run() {
     }
     ImGuiUtils::ImGuiStartFrame();
 
-    // ImGui::ShowDemoWindow();
+     ImGui::ShowDemoWindow();
     if (resize) {
       ImGui::SetNextWindowPos(MainGuiPos);
       ImGui::SetNextWindowSize(MainGuiSize);
@@ -55,8 +63,12 @@ void Game::Run() {
     RunMainGui();
     ImGui::SetNextWindowPos({0, 0});
     ImGui::SetNextWindowSize(
-        {(float)(Width - MainGuiSize.x), (float)(Height / 2.0f)});
-    DisplayFileGui();
+        {(float)(Width - MainGuiSize.x), (float)(Height / 2.5f)});
+    DisplayFileGui(log);
+    ImGui::SetNextWindowPos({0, Height / 2.5f});
+    ImGui::SetNextWindowSize(
+        {(float)(Width - MainGuiSize.x), (float)(Height - (Height/2.5))});
+    DisplayAttackGui();
 
     // Rendering
     ImGui::Render();
@@ -67,7 +79,7 @@ void Game::Run() {
   AddError("Path does not exist!");
 }
 
-void Game::RunMainGui() {
+void Editor::RunMainGui() {
   // ImGui::SetNextWindowPos(MainGuiPos);
   {
     ImGui::Begin("Main GUI", nullptr, ImGuiWindowFlags_NoMove);
@@ -95,15 +107,39 @@ void Game::RunMainGui() {
   }
 }
 
-void Game::DisplayFileGui() {
+void Editor::DisplayFileGui(bool& _log) {
   // ImGui::SetNextWindowPos({0,0});
   ImGui::Begin("Text Window", nullptr, ImGuiWindowFlags_NoResize);
-  ImGui::LogToClipboard();
-  // Display Text her
+  std::ifstream textfile = FileHandler::GetFile(path);
+  if(_log == true)
+  {
+    ImGui::LogToClipboard();
+  }
+  TextDisplay::DisplayFromFile(textfile);
+  ImGui::LogFinish();
+  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - 50);
+  if(ImGui::ImageButton("Copy Button",CopyTexture,ImVec2(50,50)))
+  {
+    _log = true;
+  }else
+  {
+    _log = false;
+  }
   ImGui::End();
 }
 
-void Game::AddError(std::string _error) {
+void Editor::DisplayAttackGui()
+{
+  ImU32 col = ImColor(ImVec4(0.85,0.26,0.96,1.0));
+  ImGui::Begin("Attack Window", nullptr, ImGuiWindowFlags_NoResize);
+  AttackBoxDrawList = ImGui::GetWindowDrawList();
+  AttackBoxDrawList->AddCircle({400,600},10,col,32,1.0f);
+  AttackBoxDrawList->AddBezierCubic({3,2},{3,2})
+  //ImGui::Image();
+  ImGui::End();
+}
+
+void Editor::AddError(std::string _error) {
   if (!errorStack.empty()) {
     if (errorStack.top() != _error) {
       errorStack.push(_error);
@@ -114,18 +150,25 @@ void Game::AddError(std::string _error) {
     GUIError = errorStack.top();
   }
 }
-// returns the error removed
-bool Game::RemoveError(const std::string &_input) {
+//returns true if it was able to remove the error
+bool Editor::RemoveError(const std::string &_input) {
+  //std::cout << "Calling remove error!\n";
   if (errorStack.empty()) {
+    //std::cout << "Empty\n";
     return false;
   } else if (errorStack.top() != _input) {
+    //std::cout << "top does not equal input!\n";
     GUIError = errorStack.top();
     return false;
   } else {
     errorStack.pop();
     if (!errorStack.empty()) {
       GUIError = errorStack.top();
+    }else
+    {
+      GUIError = "";
     }
+    //std::cout << "Popped off the error\n";
     return true;
   }
 }

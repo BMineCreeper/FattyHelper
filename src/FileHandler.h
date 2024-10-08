@@ -1,9 +1,13 @@
 #pragma once
 #include <filesystem>
+#include <fstream>
 #include <string>
 
-
-// returns true if file found at path
+struct FileStreamSuccess
+{
+  std::ifstream file;
+  bool success = false;
+};
 namespace FileHandler {
 
 bool CheckPath(const std::string &_path) {
@@ -17,4 +21,12 @@ bool CheckPath(const std::string &_path) {
   }
   return false;
 }
+//Returns opened file at path
+  std::ifstream GetFile(const std::string& _path)
+{
+  std::ifstream l_fs;
+  l_fs.open(_path);
+  return l_fs;
+}
+  
 } 
