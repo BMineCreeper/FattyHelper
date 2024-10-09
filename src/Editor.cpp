@@ -134,7 +134,6 @@ void Editor::DisplayAttackGui()
   ImGui::Begin("Attack Window", nullptr, ImGuiWindowFlags_NoResize);
   AttackBoxDrawList = ImGui::GetWindowDrawList();
   AttackBoxDrawList->AddCircle({400,600},10,col,32,1.0f);
-  AttackBoxDrawList->AddBezierCubic({3,2},{3,2})
   //ImGui::Image();
   ImGui::End();
 }

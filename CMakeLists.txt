@@ -1,17 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
-
-# Define your project and set the C++ standard
 project(FattyHelper VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Set the path where SDL2 and SDL2_image are installed
-set(CMAKE_PREFIX_PATH "C:/Libraries/")
+# Depencencies
+include(FetchContent)
 
-# Include directories for ImGui
+FetchContent_Declare(
+  SDL2_Image 
+  URL https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.2.tar.gz
+)
+set(BUILD_EXAMPLES OFF CACHE INTERNAL "")
+FetchContent_MakeAvailable(SDL2_Image)
+
 include_directories(imgui)
 
-# Source files for your project
 set(SOURCES
         src/main.cpp
         imgui/imgui.cpp
@@ -27,19 +30,8 @@ set(SOURCES
         src/FileHandler.h
         src/TextDisplay.h
 )
-
-# Find SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-# Find SDL2_image
-find_package(SDL2_image CONFIG REQUIRED)
-include_directories("C:\\Libraries\\SDL2_image\\x86_64-w64-mingw32\\include\\SDL2")
-# Debugging messages
-message(STATUS "SDL2 include dirs: " ${SDL2_INCLUDE_DIRS})
-message(STATUS "SDL2_image include dirs: " ${SDL2_IMAGE_INCLUDE_DIRS})
-
-# Add the executable
 add_executable(FattyHelper ${SOURCES})
-
-target_link_libraries(FattyHelper "C:\\Libraries\\SDL2_image\\x86_64-w64-mingw32\\lib\\libSDL2_image.a" ${SDL2_LIBRARIES})
+target_link_libraries(FattyHelper PRIVATE SDL2::SDL2 SDL2_image)
