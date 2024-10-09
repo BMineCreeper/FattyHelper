@@ -9,8 +9,8 @@
 #include "imgui.h"
 
 #include "Editor.h"
-#include "SetupUtils.h"
 #include "FileHandler.h"
+#include "SetupUtils.h"
 #include "TextDisplay.h"
 
 Editor::Editor() {
@@ -27,16 +27,17 @@ Editor::Editor() {
   Height = DM.h / 1.5;
   MainGuiSize = {Width / 3.0f, (float)Height};
   MainGuiPos = {Width - MainGuiSize.x, 0};
-  SDL_Surface* image = IMG_Load("../CB.png");
-  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer,image);
+  SDL_Surface *image = IMG_Load("../CB.png");
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
   CopyTexture = texture;
-  //image = IMG_Load()
+  // image = IMG_Load()
   ImGuiUtils::SetCustomImGuiStyle();
 }
 
 void Editor::Run() {
   bool log = false;
   bool resize = true;
+  bool displayFunctionMaker = false;
   while (runApp) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -54,20 +55,20 @@ void Editor::Run() {
     }
     ImGuiUtils::ImGuiStartFrame();
 
-     ImGui::ShowDemoWindow();
+    // ImGui::ShowDemoWindow();
     if (resize) {
       ImGui::SetNextWindowPos(MainGuiPos);
       ImGui::SetNextWindowSize(MainGuiSize);
       resize = false;
     }
-    RunMainGui();
+    RunMainGui(displayFunctionMaker);
     ImGui::SetNextWindowPos({0, 0});
     ImGui::SetNextWindowSize(
         {(float)(Width - MainGuiSize.x), (float)(Height / 2.5f)});
     DisplayFileGui(log);
     ImGui::SetNextWindowPos({0, Height / 2.5f});
     ImGui::SetNextWindowSize(
-        {(float)(Width - MainGuiSize.x), (float)(Height - (Height/2.5))});
+        {(float)(Width - MainGuiSize.x), (float)(Height - (Height / 2.5))});
     DisplayAttackGui();
 
     // Rendering
@@ -79,7 +80,7 @@ void Editor::Run() {
   AddError("Path does not exist!");
 }
 
-void Editor::RunMainGui() {
+void Editor::RunMainGui(bool& _displayfunctionmaker) {
   // ImGui::SetNextWindowPos(MainGuiPos);
   {
     ImGui::Begin("Main GUI", nullptr, ImGuiWindowFlags_NoMove);
@@ -90,8 +91,7 @@ void Editor::RunMainGui() {
     if (ImGui::IsItemActive()) {
       if (FileHandler::CheckPath(path)) {
         RemoveError("This path does not exist!");
-      }
-      else{
+      } else {
         AddError("This path does not exist!");
       }
     }
@@ -103,38 +103,44 @@ void Editor::RunMainGui() {
                       {(float)(MainGuiSize.x / 1.25), 20})) {
       runApp = false;
     }
+    if (ImGui::Button("+")) {
+      _displayfunctionmaker = true;
+    }
+    if (ImGui::IsItemHovered()) {
+      ImGui::SetTooltip("Create a Movement Function");
+    }
+    if(_displayfunctionmaker){
+      ImGui::InputFloat("Float Check",(*(ah.AddFunctionCurve()).degree)); 
+    }
     ImGui::End();
   }
 }
 
-void Editor::DisplayFileGui(bool& _log) {
+void Editor::DisplayFileGui(bool &_log) {
   // ImGui::SetNextWindowPos({0,0});
   ImGui::Begin("Text Window", nullptr, ImGuiWindowFlags_NoResize);
   std::ifstream textfile = FileHandler::GetFile(path);
-  if(_log == true)
-  {
+  if (_log == true) {
     ImGui::LogToClipboard();
   }
   TextDisplay::DisplayFromFile(textfile);
   ImGui::LogFinish();
-  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - 50);
-  if(ImGui::ImageButton("Copy Button",CopyTexture,ImVec2(50,50)))
-  {
+  ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
+                       ImGui::GetContentRegionAvail().x - 50);
+  if (ImGui::ImageButton("Copy Button", CopyTexture, ImVec2(50, 50))) {
     _log = true;
-  }else
-  {
+  } else {
     _log = false;
   }
   ImGui::End();
 }
 
-void Editor::DisplayAttackGui()
-{
-  ImU32 col = ImColor(ImVec4(0.85,0.26,0.96,1.0));
+void Editor::DisplayAttackGui() {
+  ImU32 col = ImColor(ImVec4(0.85, 0.26, 0.96, 1.0));
   ImGui::Begin("Attack Window", nullptr, ImGuiWindowFlags_NoResize);
   AttackBoxDrawList = ImGui::GetWindowDrawList();
-  AttackBoxDrawList->AddCircle({400,600},10,col,32,1.0f);
-  //ImGui::Image();
+  AttackBoxDrawList->AddCircle({400, 600}, 10, col, 32, 1.0f);
+  // ImGui::Image();
   ImGui::End();
 }
 
@@ -149,25 +155,24 @@ void Editor::AddError(std::string _error) {
     GUIError = errorStack.top();
   }
 }
-//returns true if it was able to remove the error
+// returns true if it was able to remove the error
 bool Editor::RemoveError(const std::string &_input) {
-  //std::cout << "Calling remove error!\n";
+  // std::cout << "Calling remove error!\n";
   if (errorStack.empty()) {
-    //std::cout << "Empty\n";
+    // std::cout << "Empty\n";
     return false;
   } else if (errorStack.top() != _input) {
-    //std::cout << "top does not equal input!\n";
+    // std::cout << "top does not equal input!\n";
     GUIError = errorStack.top();
     return false;
   } else {
     errorStack.pop();
     if (!errorStack.empty()) {
       GUIError = errorStack.top();
-    }else
-    {
+    } else {
       GUIError = "";
     }
-    //std::cout << "Popped off the error\n";
+    // std::cout << "Popped off the error\n";
     return true;
   }
 }

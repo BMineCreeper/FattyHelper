@@ -12,6 +12,7 @@ FetchContent_Declare(
 )
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(SDL2_Image)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(imgui)
 
