@@ -30,6 +30,8 @@ set(SOURCES
         src/Editor.cpp
         src/FileHandler.h
         src/TextDisplay.h
+        src/AttackHandler.h
+        src/AttackHandler.cpp
 )
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})

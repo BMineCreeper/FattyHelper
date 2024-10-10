@@ -1,9 +1,11 @@
-
+#include <algorithm>
 #include <iostream>
 
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include <string>
 
+#include "AttackHandler.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include "imgui.h"
@@ -13,11 +15,12 @@
 #include "SetupUtils.h"
 #include "TextDisplay.h"
 
+void DisplayFunctionMaker(AttackHandler &_ah);
+
 Editor::Editor() {
   if (!SDLUtils::SetupSDL(window, renderer)) {
     std::cout << "Editor couldn't start, SDL Failed!\n";
   }
-
   // Setup Dear ImGui
   io = ImGuiUtils::SetupImGui(window, renderer);
   viewport = ImGui::GetMainViewport();
@@ -80,7 +83,7 @@ void Editor::Run() {
   AddError("Path does not exist!");
 }
 
-void Editor::RunMainGui(bool& _displayfunctionmaker) {
+void Editor::RunMainGui(bool &_displayfunctionmaker) {
   // ImGui::SetNextWindowPos(MainGuiPos);
   {
     ImGui::Begin("Main GUI", nullptr, ImGuiWindowFlags_NoMove);
@@ -90,27 +93,28 @@ void Editor::RunMainGui(bool& _displayfunctionmaker) {
     ImGui::InputText("path", path, 256);
     if (ImGui::IsItemActive()) {
       if (FileHandler::CheckPath(path)) {
-        RemoveError("This path does not exist!");
+        RemoveError("Path does not exist.");
       } else {
-        AddError("This path does not exist!");
+        AddError("Path does not exist.");
       }
     }
     if (ImGui::IsItemHovered()) {
       ImGui::SetTooltip("Specify path to lua file");
     }
-
     if (ImGui::Button("Click this to close the app",
                       {(float)(MainGuiSize.x / 1.25), 20})) {
       runApp = false;
     }
-    if (ImGui::Button("+")) {
+    if (ImGui::Button("Open Function Maker Window")) {
       _displayfunctionmaker = true;
+      ah.AddMovementCurve();
     }
     if (ImGui::IsItemHovered()) {
       ImGui::SetTooltip("Create a Movement Function");
     }
-    if(_displayfunctionmaker){
-      ImGui::InputFloat("Float Check",(*(ah.AddFunctionCurve()).degree)); 
+    if (_displayfunctionmaker) {
+      // Need some sort of int displaying which functioncurve needs to be edited
+      DisplayFunctionMaker(ah);
     }
     ImGui::End();
   }
@@ -175,4 +179,28 @@ bool Editor::RemoveError(const std::string &_input) {
     // std::cout << "Popped off the error\n";
     return true;
   }
+}
+void DisplayFunctionMaker(AttackHandler &_ah) {
+  ImGui::Begin("Create Function");
+  // Ask whether it should be a function or an ellipse
+  // Pick two points, connect them with a chosen degree, modify the constants
+  //_ah.movementCurves[] = ImGui::GetMousePos();
+  if (ImGui::Button("+")) {
+    _ah.AddMovementCurve();
+  }
+  ImGui::BeginListBox("Dollar box", {300, 17});
+  for (int i = 0; i < _ah.movementCurves.size(); i++) {
+    ImGui::Selectable(_ah.movementCurves[i].CurvePlainText.c_str());
+  }
+  ImGui::EndListBox();
+  // Do options for function show what the current function looks like
+  ImGui::BeginChild("Function");
+  if (_ah.movementCurves.size() != 0) {
+   //ah takes a window and renders lines on it 
+    ImVec2 windowSize = ImGui::GetWindowSize();
+    ImGui::Image(,windowSize);
+    _ah.RenderCurrentCurve(_ah.movementCurves[0]);
+  }
+  ImGui::EndChild();
+  ImGui::End();
 }

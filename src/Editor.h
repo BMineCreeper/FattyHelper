@@ -3,6 +3,7 @@
 #include <SDL2/SDL_render.h>
 #include <string>
 #include <stack>
+#include "AttackHandler.h"
 
 class Editor
 {
@@ -12,7 +13,7 @@ public:
     void AddError(std::string _error);
     bool RemoveError(const std::string& _input);
 private:
-    void RunMainGui();
+    void RunMainGui(bool& _displayfunctionmaker);
     void DisplayFileGui(bool& _log);
     void DisplayAttackGui();
     ImGuiIO io;
@@ -31,6 +32,7 @@ private:
     char path[256] = "";
     std::string GUIError;
     std::stack<std::string> errorStack;
+    AttackHandler ah;
     int Width;
     int Height;
 };

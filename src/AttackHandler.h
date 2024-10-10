@@ -8,6 +8,7 @@ struct FunctionCurve {
   float constants[8];
   int degree;
   ImVec2 startPoint = {0,0}; 
+  ImVec2 endPoint = {1920,1080};
 };
 //Radius x and y should be the same if it is a regular circle
 struct CircleEllipse {
@@ -21,6 +22,7 @@ public:
   std::vector<FunctionCurve> movementCurves;
   std::vector<FunctionCurve> speedCurves;
   //Just rendering the line can be handled by default ImGui utils, but actually rendering the bullet following the path can be done here
-  void RenderCurrentCurve();
-  FunctionCurve* AddFunctionCurve();
+  void RenderCurrentCurve(FunctionCurve curve); 
+  void AddMovementCurve();
+  std::string GetFunctionPlainText(const FunctionCurve& curve);
 };
