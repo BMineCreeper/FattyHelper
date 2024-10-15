@@ -7,7 +7,7 @@
 struct FunctionCurve {
   std::string CurveName = " ";
   int degree;
-  ImVec2 points[4];
+  ImVec2 points[4] = {{300,800},{0,0},{0,0},{1620,280}};
 };
 // Radius x and y should be the same if it is a regular circle
 struct CircleEllipse {
@@ -34,7 +34,7 @@ public:
   // Just rendering the line can be handled by default ImGui utils, but actually
   // rendering the bullet following the path can be done here
   void RenderSprites(std::vector<RenderSDLTexture> textures,SDL_Renderer* _renderer);
-  void RenderBullets(SDL_Renderer* _renderer,FunctionCurve curve);
+  void RenderBullets(SDL_Renderer* _renderer,FunctionCurve curve, int numBullets);
   void RenderCurrentCurve(FunctionCurve curve);
   void AddMovementCurve();
   std::string GetFunctionPlainText(const FunctionCurve &curve);

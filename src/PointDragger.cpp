@@ -1,10 +1,13 @@
 #include "PointDragger.h"
+#include "imgui.h"
 void PointDragger::RenderPoints()
 {
+  
+    ImVec2 wp = ImGui::GetWindowPos();
     ImDrawList* drawlist = ImGui::GetWindowDrawList();
     for (int i = 0; i < 4; i++)
     {
-        drawlist->AddCircleFilled(points[i],3,ImColor(ImVec4(0.85, 0.26, 0.96, 1.0)));
+        drawlist->AddCircleFilled({points[i].x + wp.x,points[i].y + wp.y},3,ImColor(ImVec4(0.85, 0.26, 0.96, 1.0)));
     }
 }
 

@@ -16,7 +16,6 @@
 #include "FileHandler.h"
 #include "SetupUtils.h"
 #include "TextDisplay.h"
-#include "Utils.h"
 
 void DisplayFunctionMaker(AttackHandler &ah);
 
@@ -92,7 +91,7 @@ void Editor::Run() {
     ah.RenderSprites(sdlSprites, renderer);
     if (!ah.movementCurves.empty()) {
       // std::cout << "Rendering\n";
-      ah.RenderBullets(renderer, ah.movementCurves[0]);
+      ah.RenderBullets(renderer, ah.movementCurves[0],3);
     }
     // REMINDER FOR ME, you gotta put this bit after imgui::render, but you can
     // probably get the imgui window state and then use it here
@@ -127,10 +126,6 @@ void Editor::RunMainGui(bool &_displayfunctionmaker) {
     if (ImGui::Button("Open Function Maker Window")) {
       _displayfunctionmaker = true;
       ah.AddMovementCurve();
-      ah.movementCurves[0].points[0] = {300, 300}; // start
-      ah.movementCurves[0].points[3] = {600, 600}; // end
-      ah.movementCurves[0].points[1] = {300, 500}; // control one
-      ah.movementCurves[0].points[2] = {500, 300}; // control two
       pd.AddCurve(&ah.movementCurves[0]);
     }
     if (ImGui::IsItemHovered()) {
@@ -205,8 +200,9 @@ bool Editor::RemoveError(const std::string &_input) {
 }
 void Editor::DisplayFunctionMaker() {
   bool check = false;
+  ImGui::SetNextWindowSize({1920,1080});
   ImGui::Begin("Create Function", nullptr,
-               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysUseWindowPadding);
+              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoResize);
   // Ask whether it should be a function or an ellipse
   // Pick two points, connect them with a chosen degree, modify the
   // constants ah.movementCurves[] = ImGui::GetMousePos();
