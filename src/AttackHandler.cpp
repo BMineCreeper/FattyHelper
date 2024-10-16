@@ -16,7 +16,6 @@ void AttackHandler::Setup(SDL_Renderer* renderer)
 void AttackHandler::AddMovementCurve() {
   FunctionCurve curve;
   curve.degree = 1;
-  curve.CurveName = "Ax^8 + Bx^7 + Cx^6 ...";
   movementCurves.push_back(curve);
 }
 std::string AttackHandler::GetFunctionPlainText(const FunctionCurve &curve) {
@@ -25,19 +24,6 @@ std::string AttackHandler::GetFunctionPlainText(const FunctionCurve &curve) {
     plaintextstring = "Dollar test 13";
   }
   return plaintextstring;
-}
-void AttackHandler::RenderCurrentCurve(FunctionCurve curve) {
-  auto AttackBoxDrawList = ImGui::GetWindowDrawList();
-  AttackBoxDrawList->AddBezierCubic({bulletWindowPosition.x + curve.points[0].x,
-                                     bulletWindowPosition.y + curve.points[0].y},
-                                    {bulletWindowPosition.x + curve.points[1].x,
-                                     bulletWindowPosition.y + curve.points[1].y},
-                                    {bulletWindowPosition.x + curve.points[2].x,
-                                     bulletWindowPosition.y + curve.points[2].y},
-                                    {bulletWindowPosition.x + curve.points[3].x,
-                                     bulletWindowPosition.y + curve.points[3].y},
-                                    ImColor(ImVec4(0.85, 0.26, 0.96, 1.0)),
-                                    2.0f,32);
 }
 
 void AttackHandler::RenderSprites(std::vector<RenderSDLTexture> textures,

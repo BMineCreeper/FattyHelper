@@ -5,7 +5,7 @@
 #include <vector>
 
 struct FunctionCurve {
-  std::string CurveName = " ";
+  char CurveName[128] = " ";
   int degree;
   ImVec2 points[4] = {{300,800},{0,0},{0,0},{1620,280}};
 };

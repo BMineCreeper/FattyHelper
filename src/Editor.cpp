@@ -28,8 +28,8 @@ Editor::Editor() {
   viewport = ImGui::GetMainViewport();
   SDL_DisplayMode DM;
   SDL_GetCurrentDisplayMode(0, &DM);
-  Width = DM.w / 1.25;
-  Height = DM.h / 1.25;
+  Width = DM.w;
+  Height = DM.h;
   MainGuiSize = {Width / 3.0f, (float)Height};
   MainGuiPos = {Width - MainGuiSize.x, 0};
   SDL_Surface *image = IMG_Load("../CB.png");
@@ -125,8 +125,6 @@ void Editor::RunMainGui(bool &_displayfunctionmaker) {
     }
     if (ImGui::Button("Open Function Maker Window")) {
       _displayfunctionmaker = true;
-      ah.AddMovementCurve();
-      pd.AddCurve(&ah.movementCurves[0]);
     }
     if (ImGui::IsItemHovered()) {
       ImGui::SetTooltip("Create a Movement Function");
@@ -198,47 +196,36 @@ bool Editor::RemoveError(const std::string &_input) {
     return true;
   }
 }
-void Editor::DisplayFunctionMaker() {
+void Editor::DisplayFunctionMaker()
+{
   bool check = false;
   ImGui::SetNextWindowSize({1920,1080});
+  ImGui::SetNextWindowPos({0,0});
   ImGui::Begin("Create Function", nullptr,
               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoResize);
-  // Ask whether it should be a function or an ellipse
-  // Pick two points, connect them with a chosen degree, modify the
-  // constants ah.movementCurves[] = ImGui::GetMousePos();
   if (ImGui::Button("+")) {
     ah.AddMovementCurve();
+    pd.AddCurve(&ah.movementCurves[0]);
   }
-  if (ImGui::BeginListBox("Dollar box", {300, 17})) {
-    check = true;
-  }
-  for (auto &movementCurve : ah.movementCurves) {
-    ImGui::Selectable(movementCurve.CurveName.c_str());
-  }
-  if (check)
-    ImGui::EndListBox();
+  if(ah.movementCurves.empty()) { ImGui::End(); return;}
   ImGui::SameLine();
   ImGui::SetNextItemWidth(ImGui::GetWindowSize().x / 3);
   ImGui::DragFloat("Speed", &ah.speed, 0.1f, 0.0f, 5.0f);
   ImGui::SameLine();
-  char curvename[128] = " ";
-  ImGui::InputText("Name", curvename, 128);
-  ah.movementCurves[0].CurveName = curvename;
+  ImGui::InputText("Name", ah.movementCurves[0].CurveName, 128);
   // Do options for function show what the current function looks like
   ImGui::BeginChild("Function");
-  ah.bulletWindowPosition = ImGui::GetWindowPos();
-  ah.bulletWindowSize = ImGui::GetWindowSize();
   ImVec2 windowsize = ImGui::GetWindowSize();
   ImVec2 windowpos = ImGui::GetWindowPos();
+  ah.bulletWindowPosition = windowpos;
+  ah.bulletWindowSize = windowsize;
   sdlSprites[0].destrect = {static_cast<int>(windowpos.x + windowsize.x / 2),
                             static_cast<int>(windowpos.y + windowsize.y / 2),
                             20, 20};
   sdlSprites[0].doRender = true;
   pd.DragPoints();
   pd.RenderPoints();
-  if (ah.movementCurves.size() != 0) {
-    ah.RenderCurrentCurve(ah.movementCurves[0]);
-  }
+  ah.RenderCurrentCurve(ah.movementCurves[0]);
   ImGui::EndChild();
   ImGui::End();
 }

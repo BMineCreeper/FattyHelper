@@ -21,13 +21,11 @@ namespace SDLUtils
             std::cout << "init img error";
             return false;
         }
-        
-        
         SDL_DisplayMode DM;
         SDL_GetCurrentDisplayMode(0, &DM);
         int Width = DM.w;
         int Height = DM.h;
-        _window = SDL_CreateWindow("Fatty Helper", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width/1.25, Height/1.25, SDL_WINDOW_ALLOW_HIGHDPI);
+        _window = SDL_CreateWindow("Fatty Helper", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_WINDOW_ALLOW_HIGHDPI);
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
         if(_window == nullptr){
             std::cout << "window error";
