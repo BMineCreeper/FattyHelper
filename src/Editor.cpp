@@ -14,10 +14,10 @@
 
 #include "AttackHandler.h"
 #include "FileHandler.h"
-#include "SetupUtils.h"
 #include "TextDisplay.h"
+#include "Utils.h"
 
-void DisplayFunctionMaker(AttackHandler &ah);
+void DisplayFunctionMaker(AttackHandler& ah);
 
 Editor::Editor() {
   if (!SDLUtils::SetupSDL(window, renderer)) {
@@ -32,7 +32,7 @@ Editor::Editor() {
   Height = DM.h;
   MainGuiSize = {Width / 3.0f, (float)Height};
   MainGuiPos = {Width - MainGuiSize.x, 0};
-  SDL_Surface *image = IMG_Load("../CB.png");
+  SDL_Surface* image = IMG_Load("../CB.png");
   // SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
   // CopyTexture = texture;
   image = IMG_Load("../UH.png");
@@ -41,28 +41,26 @@ Editor::Editor() {
   } else {
     RemoveError("Image not found!");
   }
-  sdlSprites.emplace_back(
-      RenderSDLTexture{SDL_CreateTextureFromSurface(renderer, image)});
+  sdlSprites.emplace_back(RenderSDLTexture{SDL_CreateTextureFromSurface(renderer, image)});
   SDL_FreeSurface(image);
   ImGuiUtils::SetCustomImGuiStyle();
-  ah.Setup(renderer);
+  cr.Setup(renderer);
 }
 
 void Editor::Run() {
   bool log = false;
-  bool resize = true;
   bool displayFunctionMaker = false;
+  bool resize = true;
   while (runApp) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       ImGui_ImplSDL2_ProcessEvent(&event);
       if (event.type == SDL_QUIT)
         runApp = false;
-      if (event.type == SDL_WINDOWEVENT &&
-          event.window.event == SDL_WINDOWEVENT_CLOSE &&
-          event.window.windowID == SDL_GetWindowID(window))
+      if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
         runApp = false;
     }
+
     if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
       SDL_Delay(10);
       continue;
@@ -76,35 +74,26 @@ void Editor::Run() {
     }
     RunMainGui(displayFunctionMaker);
     ImGui::SetNextWindowPos({0, 0});
-    ImGui::SetNextWindowSize(
-        {(float)(Width - MainGuiSize.x), (float)(Height / 2.5f)});
+    ImGui::SetNextWindowSize({(float)(Width - MainGuiSize.x), (float)(Height / 2.5f)});
     DisplayFileGui(log);
     ImGui::SetNextWindowPos({0, Height / 2.5f});
-    ImGui::SetNextWindowSize(
-        {(float)(Width - MainGuiSize.x), (float)(Height - (Height / 2.5))});
+    ImGui::SetNextWindowSize({(float)(Width - MainGuiSize.x), (float)(Height - (Height / 2.5))});
     DisplayAttackGui();
     // Rendering
-
     ImGui::Render();
     SDLUtils::FinishSDLFrame(window, renderer, clear_color, io);
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-    ah.RenderSprites(sdlSprites, renderer);
-    if (!ah.movementCurves.empty()) {
-      // std::cout << "Rendering\n";
-      ah.RenderBullets(renderer, ah.movementCurves[0],3);
-    }
-    // REMINDER FOR ME, you gotta put this bit after imgui::render, but you can
-    // probably get the imgui window state and then use it here
+    cr.RenderBullets(renderer, ah.currentCurve, 10);
+    cr.RenderSprites(sdlSprites, renderer);
     SDL_RenderPresent(renderer);
   }
   AddError("Path does not exist!");
 }
 
-void Editor::RunMainGui(bool &_displayfunctionmaker) {
+void Editor::RunMainGui(bool& _displayfunctionmaker) {
   // ImGui::SetNextWindowPos(MainGuiPos);
   {
-    ImGui::Begin("Main GUI", nullptr,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+    ImGui::Begin("Main GUI", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
     ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", GUIError.c_str());
     MainGuiSize = ImGui::GetWindowSize();
     ImGui::SetNextItemWidth(MainGuiSize.x / 1.25);
@@ -119,8 +108,7 @@ void Editor::RunMainGui(bool &_displayfunctionmaker) {
     if (ImGui::IsItemHovered()) {
       ImGui::SetTooltip("Specify path to lua file");
     }
-    if (ImGui::Button("Click this to close the app",
-                      {(float)(MainGuiSize.x / 1.25), 20})) {
+    if (ImGui::Button("Click this to close the app", {(float)(MainGuiSize.x / 1.25), 20})) {
       runApp = false;
     }
     if (ImGui::Button("Open Function Maker Window")) {
@@ -137,18 +125,16 @@ void Editor::RunMainGui(bool &_displayfunctionmaker) {
   }
 }
 
-void Editor::DisplayFileGui(bool &_log) {
+void Editor::DisplayFileGui(bool& _log) {
   // ImGui::SetNextWindowPos({0,0});
-  ImGui::Begin("Text Window", nullptr,
-               ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
+  ImGui::Begin("Text Window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
   std::ifstream textfile = FileHandler::GetFile(path);
   if (_log == true) {
     ImGui::LogToClipboard();
   }
   TextDisplay::DisplayFromFile(textfile);
   ImGui::LogFinish();
-  ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
-                       ImGui::GetContentRegionAvail().x - 50);
+  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - 50);
   if (ImGui::ImageButton("Copy Button", CopyTexture, ImVec2(50, 50))) {
     _log = true;
   } else {
@@ -158,9 +144,8 @@ void Editor::DisplayFileGui(bool &_log) {
 }
 
 void Editor::DisplayAttackGui() {
-  ImGui::Begin("Attack Window", nullptr,
-               ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
-  // ImGui::Image();
+  ImGui::Begin("Attack Window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
+  // I literally think nothing happens here, basically  just an image is drawn by the one thingy
   ImGui::End();
 }
 
@@ -176,7 +161,7 @@ void Editor::AddError(std::string _error) {
   }
 }
 // returns true if it was able to remove the error
-bool Editor::RemoveError(const std::string &_input) {
+bool Editor::RemoveError(const std::string& _input) {
   // std::cout << "Calling remove error!\n";
   if (errorStack.empty()) {
     // std::cout << "Empty\n";
@@ -196,36 +181,56 @@ bool Editor::RemoveError(const std::string &_input) {
     return true;
   }
 }
-void Editor::DisplayFunctionMaker()
-{
+void Editor::DisplayFunctionMaker() {
   bool check = false;
-  ImGui::SetNextWindowSize({1920,1080});
-  ImGui::SetNextWindowPos({0,0});
+  ImGui::SetNextWindowSize({1920, 1080});
+  ImGui::SetNextWindowPos({0, 0});
   ImGui::Begin("Create Function", nullptr,
-              ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoResize);
-  if (ImGui::Button("+")) {
-    ah.AddMovementCurve();
-    pd.AddCurve(&ah.movementCurves[0]);
+               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoResize);
+  if (!(ah.hasCurve || ah.hasEllipse)) {
+    if (ImGui::Button("Create Ellipse")) {
+      ah.AddEllipse();
+    } else {
+      ImGui::SameLine();
+      if (ImGui::Button("Create Curve")) {
+        ah.AddCurve();
+      }
+    }
   }
-  if(ah.movementCurves.empty()) { ImGui::End(); return;}
-  ImGui::SameLine();
-  ImGui::SetNextItemWidth(ImGui::GetWindowSize().x / 3);
-  ImGui::DragFloat("Speed", &ah.speed, 0.1f, 0.0f, 5.0f);
-  ImGui::SameLine();
-  ImGui::InputText("Name", ah.movementCurves[0].CurveName, 128);
+  if (ah.hasCurve || ah.hasEllipse) {
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(ImGui::GetWindowSize().x / 3);
+    ImGui::DragFloat("Speed", &cr.speed, 0.1f, 0.0f, 5.0f);
+    ImGui::SameLine();
+    ImGui::InputText("Name", ah.currentCurve.CurveName, 128);
+  }
   // Do options for function show what the current function looks like
   ImGui::BeginChild("Function");
   ImVec2 windowsize = ImGui::GetWindowSize();
   ImVec2 windowpos = ImGui::GetWindowPos();
-  ah.bulletWindowPosition = windowpos;
-  ah.bulletWindowSize = windowsize;
-  sdlSprites[0].destrect = {static_cast<int>(windowpos.x + windowsize.x / 2),
-                            static_cast<int>(windowpos.y + windowsize.y / 2),
-                            20, 20};
+  ImGui::SetCursorPos({ImGui::GetCursorPos().x + static_cast<float>((windowsize.x - (0.02 * windowsize.x))),
+                       ImGui::GetCursorPos().y + static_cast<float>((windowsize.y - (0.08 * windowsize.y)))});
+  if (ImGui::Button("Save")) {
+    if (ah.hasCurve) {
+      RemoveError("Couldn't save, there is not a curve or ellipse!");
+      ah.SaveCurve();
+    } else if (ah.hasEllipse) {
+      RemoveError("Couldn't save, there is not a curve or ellipse!");
+      ah.SaveEllipse();
+    } else {
+      AddError("Couldn't save, there is not a curve or ellipse!");
+    }
+  }
+  sdlSprites[0].destrect = {static_cast<int>(windowpos.x + windowsize.x / 2), static_cast<int>(windowpos.y + windowsize.y / 2), 20, 20};
   sdlSprites[0].doRender = true;
-  pd.DragPoints();
-  pd.RenderPoints();
-  ah.RenderCurrentCurve(ah.movementCurves[0]);
+  cr.windowPosition = windowpos;
+  if (ah.hasEllipse) {
+    pd.DragPoints(ah.currentCurve);
+    pd.RenderPoints(ah.currentCurve);
+  } else if (ah.hasCurve) {
+    pd.DragPoints(ah.currentCurve);
+    pd.RenderPoints(ah.currentCurve);
+  }
   ImGui::EndChild();
   ImGui::End();
 }

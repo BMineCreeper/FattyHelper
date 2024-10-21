@@ -1,41 +1,20 @@
 #pragma once
-#include "imgui.h"
-#include <SDL_render.h>
-#include <string>
+#include "Structs.h"
 #include <vector>
-
-struct FunctionCurve {
-  char CurveName[128] = " ";
-  int degree;
-  ImVec2 points[4] = {{300,800},{0,0},{0,0},{1620,280}};
-};
-// Radius x and y should be the same if it is a regular circle
-struct CircleEllipse {
-  float radiusx = 1;
-  float radiusy = 1;
-  ImVec2 center = {0, 0};
-};
-struct RenderSDLTexture{
-  SDL_Texture* texture;
-  SDL_Rect destrect = {0,0,0,0};
-  bool doRender = false;
-};
+// The job of this class should be to combine and control aspects of combined curves, it should then export all the curves as one attack to the file writer
 
 class AttackHandler {
 public:
-  void Setup(SDL_Renderer* renderer);
-  RenderSDLTexture BulletTexture;
-  std::vector<FunctionCurve> movementCurves;
-  std::vector<FunctionCurve> speedCurves;
-  ImVec2 bulletWindowPosition;
-  ImVec2 bulletWindowSize;
-  double time = 0.0f;
-  float speed = 0.0f;
-  // Just rendering the line can be handled by default ImGui utils, but actually
-  // rendering the bullet following the path can be done here
-  void RenderSprites(std::vector<RenderSDLTexture> textures,SDL_Renderer* _renderer);
-  void RenderBullets(SDL_Renderer* _renderer,FunctionCurve curve, int numBullets);
-  void RenderCurrentCurve(FunctionCurve curve);
-  void AddMovementCurve();
-  std::string GetFunctionPlainText(const FunctionCurve &curve);
+  void AddCurve();
+  void AddEllipse();
+  void SaveCurve();
+  void SaveEllipse();
+public:
+  FunctionCurve currentCurve;
+  Ellipse currentEllipse;
+  bool hasCurve = false;
+  bool hasEllipse = false;
+private:
+  std::vector<FunctionCurve> Curves;
+  std::vector<Ellipse> Ellipses;
 };

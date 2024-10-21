@@ -1,14 +1,12 @@
 #pragma once
-#include "AttackHandler.h"
-#include "imgui.h"
+#include "Structs.h"
 class PointDragger{
 public:   
-  void RenderPoints();
-  void AddCurve(FunctionCurve* _curve);
-  void DragPoints();
+  //Takes a Curve and render's it's points
+  void RenderPoints(const FunctionCurve& _curve);
+  //Takes a Curve and allows the user to modify its points by dragging
+  void DragPoints(FunctionCurve& _curve);
 private:
-  ImVec2 points[4] = {{500,500},{500,500},{500,500},{500,500}};
-  std::vector<FunctionCurve*> curves;
   bool isDragging = false;
   int currentPoint;
 };
